@@ -1977,7 +1977,12 @@ class DboSource extends DataSource {
 				if (!empty($alias)) {
 					$aliases = "{$this->alias}{$alias} {$joins} ";
 				}
-				return trim("UPDATE {$table} {$aliases}SET {$fields} {$conditions}");
+				$update_sql = trim("UPDATE {$table} {$aliases}SET {$fields} {$conditions}");
+				if (strpos($conditions, 'WHERE 1 = 1') !== false){
+					CakeLog::write("error", "BLOCKING THIS -> " . $update_sql);
+					return;
+				}
+				return $update_sql;
 			case 'delete':
 				if (!empty($alias)) {
 					$aliases = "{$this->alias}{$alias} {$joins} ";
